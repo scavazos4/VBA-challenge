@@ -34,7 +34,9 @@ Dim volume2 As Double
 
 Dim ws As Worksheet
 
+
 For Each ws In Sheets
+    ' creating column headers
     ws.Cells(1, 9) = "ticker"
     ws.Cells(1, 10) = "yearly_change"
     ws.Cells(1, 11) = "percent_change"
@@ -46,20 +48,24 @@ For Each ws In Sheets
     ws.Cells(3, 15) = "greatest_percent_decrease"
     ws.Cells(4, 15) = "greates_total_Volume"
     
+   ' deleting rows that have market open as 0
+   ' so that we dont divid by zero
     For n = 800000 To 2 Step -1
         If ws.Cells(n, 3) = "0" Then
         ws.Rows(n).EntireRow.Delete
         End If
     Next n
          
+    ' initializing iSave to 2 for row placement
     iSave = 2
-
+    ' j loop is for output
     For j = 2 To 5000
-    
+   ' set market open to first value in ticker segment
+   ' and resetting volume sum
     marketOpen = ws.Cells(iSave, 3).Value
     volumeSum = 0
     
-    
+    ' using iSave to track where stopped on previous iteration
         For I = iSave To iSave + 365
             ticker1 = ws.Cells(I, 1)
             ticker2 = ws.Cells(I + 1, 1)
@@ -86,7 +92,7 @@ For Each ws In Sheets
             End If
 
     Next I
-    
+    ' formatting percent change into color
    If ws.Cells(j, 11).Value > 0 Then
         ws.Cells(j, 11).Interior.ColorIndex = 4
     ElseIf ws.Cells(j, 11).Value = 0 Then
@@ -100,7 +106,7 @@ Next j
 maxVolume = 0
 For m = 2 To 3500
     
-    
+    ' calculating maximum volume
     volume1 = ws.Cells(m, 11).Value
     volume2 = ws.Cells(m + 1, 12).Value
     ticker2 = ws.Cells(m + 1, 9).Value
@@ -115,6 +121,7 @@ Next m
 increaseSave = 0
 For k = 2 To 3500
     
+    'calculating max % increase
    ticker1 = ws.Cells(k, 9).Value
    increase1 = ws.Cells(k, 11).Value
    
@@ -128,7 +135,7 @@ Next k
 
 decreaseSave = 0
 For l = 2 To 3500
-    
+    ' calculating max % decrease
     ticker2 = ws.Cells(l, 9).Value
     decrease1 = ws.Cells(l, 11).Value
     
@@ -141,7 +148,7 @@ For l = 2 To 3500
                
 Next l
 
-
+' displaying results of analysis
     ws.Cells(2, 16).Value = tickerSave1
     ws.Cells(2, 17).Value = increaseSave
     ws.Cells(3, 16).Value = tickerSave2
@@ -149,7 +156,7 @@ Next l
     ws.Cells(4, 16).Value = tickerSave3
     ws.Cells(4, 17).Value = maxVolume
     
-
+' iterating through ws
 Next ws
 
 
